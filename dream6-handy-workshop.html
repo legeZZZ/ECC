@@ -1309,6 +1309,12 @@ function scanDevice(idx) {
 
 
 function showBackpackReward() {
+  const hasCourage = hasItem('勇气勋章');
+  const needed = hasCourage ? 3 : 5;
+  if (devicesFound < needed) {
+    alert('DEBUG: devicesFound=' + devicesFound + ' needed=' + needed + ' — 不该弹出！请截图发给我。');
+    return;
+  }
   const overlay = document.createElement('div');
   overlay.className = 'reward-popup-overlay';
   overlay.id = 'reward-popup-overlay';
