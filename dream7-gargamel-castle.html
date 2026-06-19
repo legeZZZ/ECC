@@ -560,7 +560,36 @@ body {
   </div>
 
   <!-- Gate Contents (filled by later tasks) -->
-  <div class="gate-content" id="gate-courage"></div>
+  <div class="gate-content" id="gate-courage">
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <button class="btn btn-sm" onclick="backToGateSelect()" style="background:#3a3a6a;color:#ccc;padding:6px 12px;">← 返回</button>
+      <h2 style="margin:0;">🏅 勇气之门 · 巨人搬运</h2>
+    </div>
+    <p style="color:#aaa;font-size:13px;margin-bottom:4px;">健健在门前挥手。三个沉睡巨人挡住去路——搬开重物唤醒它们！</p>
+    <p style="color:#f59e0b;font-size:12px;margin-bottom:12px;" id="courage-hint"></p>
+
+    <div class="challenge-card" id="chal-0" onclick="completeChallenge(0)">
+      <strong>🪨 推巨石</strong>
+      <p style="font-size:12px;color:#aaa;">孩子推沙发/大箱子，家长坐上面增重，推出半米过关</p>
+    </div>
+    <div class="challenge-card" id="chal-1" onclick="completeChallenge(1)">
+      <strong>🪵 抬圆木</strong>
+      <p style="font-size:12px;color:#aaa;">扫把穿进装满书的书包，两人各抬一端，一起走5步</p>
+    </div>
+    <div class="challenge-card" id="chal-2" onclick="completeChallenge(2)">
+      <strong>🏔️ 垒石堆</strong>
+      <p style="font-size:12px;color:#aaa;">孩子把垫子/枕头垒到大人肩膀高，挡住巨人视线</p>
+    </div>
+
+    <p style="text-align:center;color:#f59e0b;font-weight:700;margin-top:8px;" id="courage-status">
+      🏅 已完成 0 / <span id="courage-needed-text">3</span>
+    </p>
+    <div style="text-align:center;">
+      <button class="btn btn-primary" id="btn-courage-done" onclick="finishCourageGate()" style="display:none;">✅ 勇气之门通过！</button>
+    </div>
+  </div>
+</div>
   <div class="gate-content" id="gate-wisdom"></div>
   <div class="gate-content" id="gate-kindness"></div>
 
@@ -690,6 +719,59 @@ function initBoss() {
 
   // Reset book slots
   document.querySelectorAll('.book-slot').forEach(function(s) { s.classList.remove('lit'); });
+}
+
+// ===== AUDIO HELPERS =====
+let audioCtx = null;
+function getAudioCtx() { if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } return audioCtx; }
+function playClickSound() {
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine'; osc.frequency.setValueAtTime(600, ctx.currentTime);
+    gain.gain.setValueAtTime(.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.01, ctx.currentTime + .1);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + .1);
+  } catch(e) {}
+}
+
+// ===== COURAGE GATE HELPERS =====
+function updateCourageStatus() {
+  document.getElementById('courage-needed-text').textContent = courageNeeded;
+  document.getElementById('courage-status').textContent =
+    '🏅 已完成 ' + courageDone + ' / ' + courageNeeded;
+  if (hasItem('勇气勋章')) {
+    document.getElementById('courage-hint').textContent = '🏅 勇气勋章：健健和你一起搬，只需完成1关！';
+  }
+}
+
+function completeChallenge(idx) {
+  if (gatePhase !== 'courage') return;
+  const card = document.getElementById('chal-' + idx);
+  if (!card || card.classList.contains('done')) return;
+  card.classList.add('done');
+  courageDone++;
+  playClickSound();
+  updateCourageStatus();
+  if (courageDone >= courageNeeded) {
+    document.getElementById('btn-courage-done').style.display = 'inline-block';
+  }
+}
+
+function finishCourageGate() {
+  document.getElementById('gate-courage').classList.remove('active');
+  document.getElementById('gate-select').style.display = 'block';
+  document.getElementById('gate-btn-courage').classList.add('completed');
+  document.getElementById('gate-btn-courage').disabled = true;
+  document.getElementById('gate-btn-wisdom').disabled = false;
+  checkAllGatesDone();
+}
+
+function backToGateSelect() {
+  document.querySelectorAll('.gate-content').forEach(g => g.classList.remove('active'));
+  document.getElementById('gate-select').style.display = 'block';
+  gatePhase = 'select';
 }
 
 function enterGate(type) {
