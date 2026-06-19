@@ -411,6 +411,60 @@ body {
 
 /* ===== BACKPACK BUTTON GLOW ===== */
 @keyframes glowPulse { 0%,100% { box-shadow:0 0 8px #f59e0b; } 50% { box-shadow:0 0 24px #f59e0b,0 0 40px rgba(245,158,11,.5); } }
+
+/* ===== CASTLE COLLAPSE ===== */
+.collapse-block { position: absolute; background: #2d2d4a; border-radius: 2px; transition: all 1.2s cubic-bezier(.33,1,.68,1); }
+.collapse-block.falling { transform: translateY(700px) rotate(var(--dr, 30deg)); opacity: 0; }
+
+/* ===== PARTICLE EMITTER (box-shadow system) ===== */
+.particle-emitter { width: 6px; height: 6px; border-radius: 50%; position: fixed; z-index: 350; pointer-events: none; top: 40%; left: 50%; }
+.particle-emitter.burst { animation: particleBurst 1.4s ease-out forwards; }
+@keyframes particleBurst {
+  0% { box-shadow: 0 0 0 #f59e0b, 0 0 0 #f59e0b, 0 0 0 #f59e0b, 0 0 0 #ff6b9d, 0 0 0 #ff6b9d, 0 0 0 #fff, 0 0 0 #fff, 0 0 0 #fff, 0 0 0 #f59e0b, 0 0 0 #ff6b9d, 0 0 0 #fff, 0 0 0 #f59e0b, 0 0 0 #ff6b9d, 0 0 0 #fff, 0 0 0 #f59e0b, 0 0 0 #ff6b9d, 0 0 0 #fff, 0 0 0 #f59e0b, 0 0 0 #ff6b9d, 0 0 0 #fff; }
+  100% { box-shadow: 120px -180px 0 #f59e0b, -100px -140px 0 #f59e0b, 160px 100px 0 #f59e0b, -80px 180px 0 #ff6b9d, 200px -60px 0 #ff6b9d, -160px -120px 0 #fff, 90px 150px 0 #fff, -200px 60px 0 #fff, 260px -120px 0 #f59e0b, -240px 130px 0 #ff6b9d, 220px 200px 0 #fff, -60px -200px 0 #f59e0b, 50px 220px 0 #ff6b9d, -280px -40px 0 #fff, 140px -220px 0 #f59e0b, -170px 240px 0 #ff6b9d, 250px 30px 0 #fff, -40px -240px 0 #f59e0b, 80px 250px 0 #ff6b9d, -220px -150px 0 #fff; opacity: 0; }
+}
+
+/* ===== SUNRISE ===== */
+.sunrise-sky { position: fixed; inset: 0; z-index: 400; pointer-events: none; background: linear-gradient(to top, #ff6b9d 0%, #ffa07a 30%, #ffd89b 60%, #ffeaa7 80%, #87ceeb 100%); opacity: 0; transition: opacity 5s ease; }
+.sunrise-sky.show { opacity: 1; }
+.sun { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); width: 140px; height: 140px; background: radial-gradient(circle, #fffde7, #fff9c4, #ffd89b); border-radius: 50%; z-index: 401; pointer-events: none; box-shadow: 0 0 80px rgba(255,216,155,.6), 0 0 160px rgba(255,168,100,.3); }
+.sun.rising { animation: sunRise 4s ease-out forwards; }
+@keyframes sunRise { 0% { bottom:-100px; opacity:.6; } 40% { bottom:55%; opacity:1; } 100% { bottom:50%; opacity:1; } }
+
+/* ===== VICTORY TEXT ===== */
+.victory-overlay { position: fixed; top: 0; left: 0; right: 0; z-index: 500; text-align: center; pointer-events: none; padding-top: 8%; }
+.victory-overlay .victory-title { font-size: 36px; font-weight: 900; color: #fff; text-shadow: 0 2px 20px rgba(245,158,11,.6); animation: popIn .8s ease-out both; }
+.victory-overlay .victory-sub { font-size: 16px; color: rgba(255,255,255,.8); margin-top: 8px; animation: popIn .8s ease-out .3s both; }
+
+/* ===== CHEST ===== */
+.chest-container { cursor: pointer; text-align: center; margin: 0 auto; width: 120px; }
+.chest-lid { width: 100px; height: 30px; background: linear-gradient(to bottom, #d4a017, #a16207); border-radius: 8px 8px 0 0; margin: 0 auto; transition: transform .6s; transform-origin: 100% 100%; position: relative; top: 0; }
+.chest-lid.open { transform: rotate(-35deg); }
+.chest-lock { font-size: 24px; transition: opacity .3s; }
+.chest-lock.gone { opacity: 0; }
+.chest-glow { opacity: 0; transition: opacity 1s; font-size: 28px; }
+.chest-glow.show { opacity: 1; animation: glowPulse 1s ease-in-out infinite; }
+.chest-body { width: 100px; height: 60px; background: linear-gradient(to bottom, #b45309, #92400e); border-radius: 0 0 8px 8px; margin: 0 auto; }
+.chest-label { font-size: 14px; color: #f59e0b; margin-top: 8px; }
+
+/* ===== REWARD CARD ===== */
+.reward-card { display: none; text-align: center; background: linear-gradient(135deg,#fef3c7,#fde68a,#fcd34d); border-radius: 20px; padding: 28px; margin: 20px 0; color:#333; box-shadow: 0 8px 40px rgba(245,158,11,.3); }
+.reward-card.show { display: block; animation: popIn .6s ease-out; }
+.reward-card .reward-emoji { font-size: 64px; display: block; margin-bottom: 8px; animation: popIn .4s ease-out .2s both; }
+.reward-card .reward-title { font-size: 24px; font-weight: 900; animation: popIn .4s ease-out .4s both; }
+.reward-card .reward-desc { font-size: 14px; color: #666; margin-top: 8px; animation: popIn .4s ease-out .6s both; }
+.reward-card .reward-congrats { font-size: 12px; color: #999; margin-top: 12px; animation: popIn .4s ease-out .8s both; }
+
+/* ===== SCREEN SHAKE ===== */
+@keyframes screenShake {
+  0%,100% { transform: translate(0,0); }
+  10% { transform: translate(-12px,6px); }
+  30% { transform: translate(10px,-8px); }
+  50% { transform: translate(-6px,10px); }
+  70% { transform: translate(8px,-4px); }
+  90% { transform: translate(-4px,2px); }
+}
+body.shaking { animation: screenShake .5s ease-out; }
 </style>
 </head>
 <body>
@@ -767,7 +821,29 @@ body {
 </div>
 
   <!-- Victory Area (later) -->
-  <div id="victory-area" style="display:none;"></div>
+  <div id="victory-area" style="display:none;">
+  <div class="card" style="text-align:center;">
+    <h2>🎁 宝箱</h2>
+    <div class="chest-container" id="chest-container" onclick="openChest()">
+      <div class="chest-lid" id="chest-lid"></div>
+      <div class="chest-lock" id="chest-lock">🔒</div>
+      <div class="chest-glow" id="chest-glow">✨</div>
+      <div class="chest-body"></div>
+    </div>
+    <div class="chest-label" id="chest-label">👆 点击打开宝箱！</div>
+  </div>
+
+  <div class="reward-card" id="reward-card">
+    <span class="reward-emoji">🌞</span>
+    <div class="reward-title">自由勋章</div>
+    <div class="reward-desc">格格巫的噩梦永远结束了！<br>蓝精灵村恢复了和平。</div>
+    <div class="reward-congrats">🎉 恭喜完成全部七个梦！<br>你是蓝精灵村的小英雄！</div>
+  </div>
+
+  <div style="text-align:center;">
+    <button class="btn btn-gold" id="btn-replay" onclick="resetBoss()" style="display:none;margin:16px auto;font-size:16px;">🔄 再玩一次</button>
+  </div>
+</div>
 
 </div>
 
@@ -779,7 +855,8 @@ const ITEM_DESCRIPTIONS = {
   '勇气勋章': '健健代劳体力活',
   '智慧宝石': '聪聪提示认知题',
   '金色小号': '召唤一位盟友',
-  '机械巨兽': '灵灵的好帮手'
+  '机械巨兽': '灵灵的好帮手',
+  '自由勋章': '格格巫的噩梦永远结束'
 };
 
 // ===== INVENTORY (localStorage) =====
@@ -1328,6 +1405,134 @@ function showArmAnimation() {
   setTimeout(function() {
     startVictorySequence();
   }, 3200);
+}
+
+// ===== VICTORY SEQUENCE =====
+function startVictorySequence() {
+  // 1. Screen shake
+  document.body.classList.add('shaking');
+  setTimeout(function() { document.body.classList.remove('shaking'); }, 500);
+
+  // 2. Castle collapse blocks
+  var gscene = document.querySelector('.gargamel-scene');
+  if (gscene) {
+    var blocks = [];
+    for (var i = 0; i < 15; i++) {
+      var block = document.createElement('div');
+      block.className = 'collapse-block';
+      var w = 18 + Math.random() * 45;
+      var h = 10 + Math.random() * 35;
+      block.style.cssText = 'left:' + (25 + Math.random() * 60) + '%;top:' + (5 + Math.random() * 50) + '%;width:' + w + 'px;height:' + h + 'px;';
+      block.style.setProperty('--dr', (Math.random() - .5) * 80 + 'deg');
+      block.style.transitionDelay = Math.random() * .6 + 's';
+      gscene.appendChild(block);
+      blocks.push(block);
+    }
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() { blocks.forEach(function(b) { b.classList.add('falling'); }); });
+    });
+  }
+
+  // 3. Particle burst
+  setTimeout(function() {
+    var emitter = document.createElement('div');
+    emitter.className = 'particle-emitter burst';
+    document.body.appendChild(emitter);
+    setTimeout(function() { emitter.remove(); }, 1800);
+  }, 400);
+
+  // 4. Second particle burst
+  setTimeout(function() {
+    var emitter2 = document.createElement('div');
+    emitter2.className = 'particle-emitter burst';
+    emitter2.style.top = '45%';
+    emitter2.style.left = '48%';
+    document.body.appendChild(emitter2);
+    setTimeout(function() { emitter2.remove(); }, 1800);
+  }, 900);
+
+  // 5. Sunrise
+  setTimeout(function() {
+    var sky = document.createElement('div');
+    sky.className = 'sunrise-sky';
+    sky.id = 'sunrise-sky';
+    document.body.appendChild(sky);
+    requestAnimationFrame(function() { sky.classList.add('show'); });
+
+    var sun = document.createElement('div');
+    sun.className = 'sun rising';
+    sun.id = 'sun';
+    document.body.appendChild(sun);
+
+    // Victory text
+    var victory = document.createElement('div');
+    victory.className = 'victory-overlay';
+    victory.id = 'victory-overlay';
+    victory.innerHTML = '<div class="victory-title">🌞 噩梦结束！</div><div class="victory-sub">格格巫消失了……所有蓝精灵围了过来<br>蓝精灵村恢复了和平！</div>';
+    document.body.appendChild(victory);
+  }, 1000);
+
+  // 6. Hide boss fight, show chest
+  setTimeout(function() {
+    document.getElementById('boss-fight').style.display = 'none';
+    document.getElementById('victory-area').style.display = 'block';
+    document.getElementById('victory-area').scrollIntoView({ behavior: 'smooth' });
+  }, 3500);
+}
+
+function openChest() {
+  var cc = document.getElementById('chest-container');
+  if (cc.dataset.opened === 'true') return;
+  cc.dataset.opened = 'true';
+  cc.style.cursor = 'default';
+
+  document.getElementById('chest-lid').classList.add('open');
+  document.getElementById('chest-lock').classList.add('gone');
+  playClickSound();
+
+  setTimeout(function() {
+    document.getElementById('chest-glow').classList.add('show');
+    document.getElementById('chest-label').innerHTML = '<span style="animation:popIn .8s ease-in-out infinite alternate">✨ 宝箱打开了！✨</span>';
+  }, 800);
+
+  setTimeout(function() {
+    // Hide chest section
+    document.getElementById('chest-label').parentElement.style.display = 'none';
+    var card = document.getElementById('reward-card');
+    card.classList.add('show');
+    card.scrollIntoView({ behavior: 'smooth' });
+    addItem('自由勋章', '🌞');
+    document.getElementById('btn-replay').style.display = 'inline-block';
+  }, 2200);
+}
+
+function resetBoss() {
+  // Clean up all victory effects
+  ['sunrise-sky','victory-overlay','arm-scene','spell-overlay','spell-response'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.remove();
+  });
+  document.querySelectorAll('.sun,.collapse-block,.particle-emitter,.trumpet-ring').forEach(function(el) { el.remove(); });
+
+  if (spellLoop) clearInterval(spellLoop);
+  if (darkTimer) clearTimeout(darkTimer);
+
+  // Reset chest
+  var cc = document.getElementById('chest-container');
+  if (cc) cc.dataset.opened = '';
+  var lid = document.getElementById('chest-lid');
+  if (lid) lid.classList.remove('open');
+  var lock = document.getElementById('chest-lock');
+  if (lock) lock.classList.remove('gone');
+  var glow = document.getElementById('chest-glow');
+  if (glow) glow.classList.remove('show');
+  var label = document.getElementById('chest-label');
+  if (label) label.parentElement.style.display = 'block';
+  var card = document.getElementById('reward-card');
+  if (card) { card.classList.remove('show'); }
+  document.getElementById('btn-replay').style.display = 'none';
+
+  document.body.classList.remove('shaking');
+  initBoss();
 }
 
 // ===== INIT =====
