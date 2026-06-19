@@ -352,6 +352,18 @@ body {
   .story-box { background: #f5f5f5; border-left-color: #999; }
   .print-only { display: block; font-size: 12px; color: #999; text-align: center; margin-top: 20px; }
 }
+
+/* ===== KINDNESS GATE ===== */
+.kindness-card { background: #1e1e3a; border-radius: 12px; padding: 20px; margin-bottom: 12px; text-align: center; }
+.kindness-card .giant-face { font-size: 56px; display: block; margin-bottom: 8px; }
+.kindness-card .dilemma { font-size: 15px; margin-bottom: 16px; }
+.kindness-choices { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.kindness-choices button { padding: 12px 20px; border-radius: 10px; border: 2px solid #3a3a6a; font-size: 14px; cursor: pointer; transition: all .2s; background: #1e1e3a; color: #ccc; }
+.kindness-choices button:hover { transform: scale(1.03); }
+.kindness-choices .good { background: #065f46; border-color: #22c55e; color: #fff; }
+.kindness-choices .good:hover { background: #047857; }
+.kindness-choices .bad { background: #7f1d1d; border-color: #ef4444; color: #fff; }
+.kindness-choices .bad:hover { background: #991b1b; }
 </style>
 </head>
 <body>
@@ -630,7 +642,50 @@ body {
     </div>
   </div>
 </div>
-  <div class="gate-content" id="gate-kindness"></div>
+  <div class="gate-content" id="gate-kindness">
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <button class="btn btn-sm" onclick="backToGateSelect()" style="background:#3a3a6a;color:#ccc;padding:6px 12px;">← 返回</button>
+      <h2 style="margin:0;">💛 善良之门 · 哭泣的巨人</h2>
+    </div>
+    <p style="color:#aaa;font-size:13px;margin-bottom:4px;">三个巨人坐在地上哭——它们不是坏蛋，是被噩梦困住的蓝精灵。</p>
+    <p style="color:#22c55e;font-size:12px;margin-bottom:12px;">没有道具可以跳过这一关——善良要靠自己。</p>
+
+    <div class="kindness-card" id="kindness-0">
+      <span class="giant-face">😢</span>
+      <p class="dilemma"><strong>受伤的巨人</strong><br>腿上受伤了，它很疼，眼泪啪嗒啪嗒掉</p>
+      <div class="kindness-choices">
+        <button class="good" onclick="answerKindness(0, true)">💚 给它贴创可贴，轻轻吹一吹</button>
+        <button class="bad" onclick="answerKindness(0, false)">💔 不管它，它自己会好的</button>
+      </div>
+    </div>
+
+    <div class="kindness-card" id="kindness-1" style="display:none;">
+      <span class="giant-face">😰</span>
+      <p class="dilemma"><strong>迷路的巨人</strong><br>找不到回家的路，蹲在路边抱着膝盖</p>
+      <div class="kindness-choices">
+        <button class="good" onclick="answerKindness(1, true)">💚 给它画一张地图，牵着它回家</button>
+        <button class="bad" onclick="answerKindness(1, false)">💔 让它自己找，不关我的事</button>
+      </div>
+    </div>
+
+    <div class="kindness-card" id="kindness-2" style="display:none;">
+      <span class="giant-face">😨</span>
+      <p class="dilemma"><strong>害怕的巨人</strong><br>怕黑，紧紧闭着眼睛不敢睁开</p>
+      <div class="kindness-choices">
+        <button class="good" onclick="answerKindness(2, true)">💚 陪它坐着数星星，直到它不怕了</button>
+        <button class="bad" onclick="answerKindness(2, false)">💔 说"胆小鬼"，嘲笑它</button>
+      </div>
+    </div>
+
+    <p style="text-align:center;color:#22c55e;font-weight:700;margin-top:12px;" id="kindness-status">
+      💛 已帮助 <span id="kindness-done-count">0</span> / 3 个巨人
+    </p>
+    <div style="text-align:center;">
+      <button class="btn btn-primary" id="btn-kindness-done" onclick="finishKindnessGate()" style="display:none;">✅ 善良之门通过！</button>
+    </div>
+  </div>
+</div>
 
   <!-- Door Break Scene (later) -->
   <div class="card" id="door-break" style="display:none;"></div>
@@ -856,6 +911,58 @@ function finishWisdomGate() {
   checkAllGatesDone();
 }
 
+function showKindnessCard(idx) {
+  for (let i = 0; i < 3; i++) {
+    const card = document.getElementById('kindness-' + i);
+    if (card) card.style.display = i === idx ? 'block' : 'none';
+  }
+}
+
+function answerKindness(idx, good) {
+  if (gatePhase !== 'kindness') return;
+  if (good) {
+    kindnessDone++;
+    document.getElementById('kindness-done-count').textContent = kindnessDone;
+    playClickSound();
+    if (kindnessDone >= 3) {
+      document.getElementById('btn-kindness-done').style.display = 'inline-block';
+      document.getElementById('kindness-status').textContent = '💛 所有巨人都变回了蓝精灵！它们围过来说："谢谢你没有把我们当怪物。"';
+      // Hide last card
+      document.getElementById('kindness-' + idx).style.display = 'none';
+    } else {
+      kindnessCurrent++;
+      showKindnessCard(kindnessCurrent);
+    }
+  } else {
+    // Shake the card to indicate wrong choice
+    const card = document.getElementById('kindness-' + idx);
+    card.style.animation = 'shake .4s ease';
+    setTimeout(() => { card.style.animation = ''; }, 400);
+    playHitSound();
+  }
+}
+
+function finishKindnessGate() {
+  document.getElementById('gate-kindness').classList.remove('active');
+  document.getElementById('gate-select').style.display = 'block';
+  document.getElementById('gate-btn-kindness').classList.add('completed');
+  document.getElementById('gate-btn-kindness').disabled = true;
+  checkAllGatesDone();
+}
+
+function playHitSound() {
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'square'; osc.frequency.setValueAtTime(400, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + .15);
+    gain.gain.setValueAtTime(.15, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.01, ctx.currentTime + .15);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + .15);
+  } catch(e) {}
+}
+
 function enterGate(type) {
   document.getElementById('gate-select').style.display = 'none';
   document.querySelectorAll('.gate-content').forEach(function(g) { g.classList.remove('active'); });
@@ -887,6 +994,8 @@ function enterGate(type) {
     kindnessCurrent = 0;
     document.getElementById('kindness-done-count').textContent = '0';
     document.getElementById('btn-kindness-done').style.display = 'none';
+    document.getElementById('kindness-status').textContent =
+      '💛 已帮助 0 / 3 个巨人';
     showKindnessCard(0);
   }
 }
