@@ -364,6 +364,53 @@ body {
 .kindness-choices .good:hover { background: #047857; }
 .kindness-choices .bad { background: #7f1d1d; border-color: #ef4444; color: #fff; }
 .kindness-choices .bad:hover { background: #991b1b; }
+
+/* ===== DOOR BREAK ===== */
+.door-scene { position: relative; height: 240px; overflow: hidden; border-radius: 16px; background: linear-gradient(#1a1030, #0f0c29); }
+.door { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 140px; height: 200px; background: #3d2d1a; border-radius: 8px 8px 0 0; border: 4px solid #5a4a2a; transition: all .6s ease-in; }
+.door::before { content: '🔒'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 50px; }
+.door.breaking { animation: doorBreak .8s ease-in forwards; }
+@keyframes doorBreak { 0% { transform: translateX(-50%) rotate(0); } 30% { transform: translateX(-50%) rotate(-8deg); } 60% { transform: translateX(-50%) rotate(5deg); } 100% { transform: translateX(-50%) translateY(500px) rotate(20deg); opacity: 0; } }
+.beast-charge { position: absolute; bottom: 10px; left: -120px; font-size: 52px; transition: left 1s ease-in; }
+.beast-charge.charging { left: 48%; }
+
+/* ===== BOSS FIGHT ===== */
+.gargamel-scene { position: relative; height: 280px; border-radius: 16px; overflow: hidden; background: radial-gradient(ellipse at center, #1a1040 0%, #0a0520 100%); margin-bottom: 16px; }
+.gargamel-scene .tower { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 100px; height: 160px; background: linear-gradient(to bottom, #2a1a3a, #1a0a2a); border-radius: 8px 8px 0 0; }
+.gargamel-scene .tower::after { content: ''; position: absolute; top: -20px; left: -10px; width: 120px; height: 30px; background: #3a2a4a; border-radius: 4px; }
+.gargamel-scene .gargamel { position: absolute; top: 44px; left: 50%; transform: translateX(-50%); font-size: 64px; transition: all .3s; z-index: 2; }
+.gargamel-scene .gargamel.casting { animation: castPulse .4s ease-in-out; }
+.gargamel-scene .gargamel.hurt { animation: hurtShake .4s ease-in-out; }
+.gargamel-scene .gargamel.shrinking { animation: shrinkOut 1.2s ease-in forwards; }
+@keyframes castPulse { 0%,100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.25); filter: brightness(2); } }
+@keyframes hurtShake { 0%,100% { transform: translateX(-50%); } 20% { transform: translateX(calc(-50% - 12px)); } 40% { transform: translateX(calc(-50% + 10px)); } 60% { transform: translateX(calc(-50% - 8px)); } 80% { transform: translateX(calc(-50% + 6px)); } }
+@keyframes shrinkOut { 0% { opacity:1; transform: translateX(-50%) scale(1); filter: blur(0); } 50% { opacity:.7; transform: translateX(-50%) scale(.5) rotate(8deg); filter: blur(2px); } 100% { opacity:0; transform: translateX(-50%) scale(0) rotate(20deg); filter: blur(8px); } }
+
+/* ===== SPELL OVERLAYS ===== */
+.spell-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 100; }
+.spell-overlay.fear { background: rgba(255,0,0,.3); animation: screenPulse .8s ease-in-out; }
+.spell-overlay.forget { background: rgba(255,255,255,.8); animation: screenFlash .3s ease-in-out; }
+.spell-overlay.darkness { background: rgba(0,0,0,0); transition: background 8s linear; }
+.spell-overlay.darkness.active { background: rgba(0,0,0,.9); }
+@keyframes screenPulse { 0%,100% { background:rgba(255,0,0,.1); } 50% { background:rgba(255,0,0,.4); } }
+@keyframes screenFlash { 0% { background:rgba(255,255,255,0); } 50% { background:rgba(255,255,255,.9); } 100% { background:rgba(255,255,255,0); } }
+
+/* ===== TRUMPET WAVE ===== */
+.trumpet-ring { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 20px; height: 20px; border: 3px solid gold; border-radius: 50%; pointer-events: none; z-index: 200; animation: waveExpand 1.2s ease-out forwards; }
+@keyframes waveExpand { 0% { width:20px; height:20px; opacity:1; box-shadow:0 0 30px gold, 0 0 60px gold; } 100% { width:900px; height:900px; opacity:0; box-shadow:0 0 0 transparent; } }
+
+/* ===== MECHANICAL ARM ===== */
+.arm-scene { position: fixed; inset: 0; pointer-events: none; z-index: 300; }
+.arm-segment { position: absolute; background: linear-gradient(to top, #78716c, #a8a29e); border-radius: 6px; }
+.arm-upper { width: 28px; height: 110px; bottom: -20px; right: 30px; transform-origin: 50% 100%; animation: armReachUp 1.5s ease-in-out forwards; }
+.arm-lower { width: 22px; height: 90px; bottom: 90px; right: 33px; transform-origin: 50% 100%; animation: armReachMid 1.5s ease-in-out forwards; }
+.arm-hand { position: absolute; width: 36px; height: 36px; background: #d6d3d1; border-radius: 50% 50% 30% 30%; bottom: 170px; right: 26px; animation: handGrab 1.5s ease-in-out forwards; z-index: 301; }
+@keyframes armReachUp { 0% { transform: rotate(-20deg); } 60% { transform: rotate(-80deg); } 100% { transform: rotate(-60deg); } }
+@keyframes armReachMid { 0% { transform: rotate(30deg); } 60% { transform: rotate(-50deg); } 100% { transform: rotate(-30deg); } }
+@keyframes handGrab { 0%,70% { transform: scale(1); } 85% { transform: scale(.6); } 100% { transform: scale(.4); } }
+
+/* ===== BACKPACK BUTTON GLOW ===== */
+@keyframes glowPulse { 0%,100% { box-shadow:0 0 8px #f59e0b; } 50% { box-shadow:0 0 24px #f59e0b,0 0 40px rgba(245,158,11,.5); } }
 </style>
 </head>
 <body>
@@ -688,10 +735,36 @@ body {
 </div>
 
   <!-- Door Break Scene (later) -->
-  <div class="card" id="door-break" style="display:none;"></div>
+  <div class="card" id="door-break" style="display:none;">
+  <div class="door-scene">
+    <div class="door" id="castle-door"></div>
+    <div class="beast-charge" id="beast-charge">🤖</div>
+  </div>
+  <p style="text-align:center;margin-top:12px;font-size:14px;color:#f59e0b;" id="door-msg">
+    三道大门已开……黑暗城堡的铁门紧锁！
+  </p>
+  <div style="text-align:center;margin-top:8px;" id="door-action"></div>
+</div>
 
   <!-- Boss Fight (later) -->
-  <div class="card" id="boss-fight" style="display:none;"></div>
+  <div class="card" id="boss-fight" style="display:none;">
+  <div class="gargamel-scene">
+    <div class="tower"></div>
+    <div class="gargamel" id="gargamel">🧙‍♂️</div>
+  </div>
+
+  <div style="display:flex;gap:12px;justify-content:center;margin-top:12px;flex-wrap:wrap;">
+    <button class="btn" id="btn-trumpet" onclick="useTrumpet()" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;display:none;font-size:16px;">
+      🎵 金色小号
+    </button>
+    <button class="btn" id="btn-backpack-finish" onclick="useBackpackFinish()" style="background:linear-gradient(135deg,#78716c,#44403c);color:#fff;display:none;font-size:16px;animation:glowPulse 1s ease-in-out infinite;">
+      🤖 机械手臂 · 夺魔杖！
+    </button>
+  </div>
+  <p style="text-align:center;color:#ef4444;margin-top:8px;font-size:14px;font-weight:700;min-height:20px;" id="spell-warning"></p>
+  <p style="text-align:center;color:#aaa;margin-top:4px;font-size:12px;" id="spell-status">格格巫站在高台上，准备施法……</p>
+  <div id="spell-response-area"></div>
+</div>
 
   <!-- Victory Area (later) -->
   <div id="victory-area" style="display:none;"></div>
@@ -783,6 +856,8 @@ let kindnessDone = 0;
 let kindnessCurrent = 0;
 
 function initBoss() {
+  if (spellLoop) clearInterval(spellLoop);
+  if (darkTimer) clearTimeout(darkTimer);
   gatePhase = 'select';
   courageDone = 0;
   wisdomLit = 0;
@@ -1008,6 +1083,251 @@ function checkAllGatesDone() {
     document.getElementById('gate-status').textContent = '✅ 三扇大门全部打开！黑暗城堡入口显现……';
     document.getElementById('btn-start-boss').style.display = 'inline-block';
   }
+}
+
+// ===== DOOR BREAK =====
+function startBossFight() {
+  document.getElementById('gate-select').style.display = 'none';
+  document.getElementById('door-break').style.display = 'block';
+  document.getElementById('door-break').scrollIntoView({ behavior: 'smooth' });
+  gatePhase = 'door';
+
+  if (hasItem('机械巨兽')) {
+    document.getElementById('door-msg').textContent = '🤖 机械巨兽从身后冲了过来！';
+    document.getElementById('door-action').innerHTML = '';
+    setTimeout(function() {
+      document.getElementById('beast-charge').classList.add('charging');
+      playHitSound();
+    }, 600);
+    setTimeout(function() {
+      document.getElementById('castle-door').classList.add('breaking');
+      playHitSound();
+    }, 1400);
+    setTimeout(function() {
+      document.getElementById('door-break').style.display = 'none';
+      enterBossFight();
+    }, 2400);
+  } else {
+    document.getElementById('door-msg').textContent = '没有机械巨兽……需要合力推开铁门！';
+    document.getElementById('door-action').innerHTML = '<button class="btn btn-danger" id="btn-push-door" onclick="manualDoorPush()" style="margin-top:4px;">💪 合力推门</button>';
+  }
+}
+
+function manualDoorPush() {
+  var btn = document.getElementById('btn-push-door');
+  if (btn) btn.disabled = true;
+  document.getElementById('door-msg').textContent = '用力推……！';
+  document.getElementById('castle-door').classList.add('breaking');
+  playHitSound();
+  setTimeout(function() {
+    document.getElementById('door-break').style.display = 'none';
+    enterBossFight();
+  }, 1000);
+}
+
+// ===== BOSS FIGHT =====
+var bossPhase = 'intro';
+var spellLoop = null;
+var spellType = '';
+var trumpetReady = true;
+var backpackReady = false;
+var darkTimer = null;
+var spellBlocked = false;
+
+function enterBossFight() {
+  document.getElementById('boss-fight').style.display = 'block';
+  document.getElementById('boss-fight').scrollIntoView({ behavior: 'smooth' });
+  gatePhase = 'boss';
+  bossPhase = 'intro';
+  trumpetReady = true;
+  backpackReady = false;
+  spellBlocked = false;
+  if (spellLoop) clearInterval(spellLoop);
+
+  document.getElementById('btn-trumpet').style.display = hasItem('金色小号') ? 'inline-block' : 'none';
+  document.getElementById('btn-backpack-finish').style.display = 'none';
+  document.getElementById('spell-warning').textContent = '';
+  document.getElementById('spell-status').textContent = '格格巫站在高台上，准备施法……';
+
+  // Intro delay then start spells
+  setTimeout(function() {
+    bossPhase = 'fighting';
+    document.getElementById('spell-status').textContent = '⚠️ 格格巫开始施放噩梦咒语！';
+    startSpellLoop();
+  }, 2500);
+}
+
+function startSpellLoop() {
+  if (spellLoop) clearInterval(spellLoop);
+  spellLoop = setInterval(function() {
+    if (bossPhase !== 'fighting') { clearInterval(spellLoop); return; }
+    if (spellBlocked) { spellBlocked = false; return; }
+    castRandomSpell();
+  }, 8000);
+}
+
+function castRandomSpell() {
+  var spells = ['fear', 'forget', 'darkness'];
+  spellType = spells[Math.floor(Math.random() * spells.length)];
+
+  var gargamel = document.getElementById('gargamel');
+  gargamel.classList.add('casting');
+  setTimeout(function() { gargamel.classList.remove('casting'); }, 400);
+  playHitSound();
+
+  // Remove old overlay
+  var oldOverlay = document.getElementById('spell-overlay');
+  if (oldOverlay) oldOverlay.remove();
+  var oldResponse = document.getElementById('spell-response');
+  if (oldResponse) oldResponse.remove();
+
+  var overlay = document.createElement('div');
+  overlay.className = 'spell-overlay';
+  overlay.id = 'spell-overlay';
+  document.body.appendChild(overlay);
+
+  switch (spellType) {
+    case 'fear':
+      overlay.classList.add('fear');
+      document.getElementById('spell-warning').textContent = '🔥 恐惧咒！屏幕变红——孩子快大喊"我不怕你！！"';
+      showSpellResponse('fear');
+      setTimeout(function() { if (overlay.parentNode) overlay.remove(); }, 2500);
+      break;
+    case 'forget':
+      overlay.classList.add('forget');
+      document.getElementById('spell-warning').textContent = '🧊 遗忘咒！屏幕闪烁——孩子快说出一个收集过的道具名！';
+      showSpellResponse('forget');
+      setTimeout(function() { if (overlay.parentNode) overlay.remove(); }, 2500);
+      break;
+    case 'darkness':
+      document.getElementById('spell-warning').textContent = '🌑 黑暗咒！页面渐渐变黑——在黑透前点击金色小号！';
+      overlay.classList.add('darkness');
+      // Gradual darken
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() { overlay.classList.add('active'); });
+      });
+      darkTimer = setTimeout(function() {
+        document.getElementById('spell-warning').textContent = '太黑了！格格巫得意地大笑："哈哈哈，谁都别想打败我！"';
+        if (overlay.parentNode) overlay.remove();
+      }, 8000);
+      break;
+  }
+}
+
+function showSpellResponse(type) {
+  var area = document.getElementById('spell-response-area');
+  area.innerHTML = '';
+
+  if (type === 'fear') {
+    area.innerHTML = '<div style="text-align:center;margin-top:8px;"><button class="btn btn-primary" id="btn-fear-ok">✅ 喊了！完成！</button></div>';
+    document.getElementById('btn-fear-ok').onclick = function() {
+      document.getElementById('spell-warning').textContent = '💪 勇气战胜了恐惧！';
+      area.innerHTML = '';
+      playClickSound();
+    };
+  } else if (type === 'forget') {
+    area.innerHTML = '<div style="text-align:center;margin-top:8px;"><button class="btn btn-primary" id="btn-forget-ok">✅ 说出来了！完成！</button></div>';
+    document.getElementById('btn-forget-ok').onclick = function() {
+      document.getElementById('spell-warning').textContent = '🧠 记忆驱散了遗忘！';
+      area.innerHTML = '';
+      playClickSound();
+    };
+  }
+}
+
+function useTrumpet() {
+  if (!trumpetReady || bossPhase !== 'fighting') return;
+  trumpetReady = false;
+  document.getElementById('btn-trumpet').style.display = 'none';
+
+  // Kill current spell
+  if (darkTimer) { clearTimeout(darkTimer); darkTimer = null; }
+  var overlay = document.getElementById('spell-overlay');
+  if (overlay) overlay.remove();
+  var response = document.getElementById('spell-response');
+  if (response) response.remove();
+  document.getElementById('spell-warning').textContent = '';
+  document.getElementById('spell-response-area').innerHTML = '';
+  spellBlocked = true;
+
+  // Trumpet wave animation
+  var ring = document.createElement('div');
+  ring.className = 'trumpet-ring';
+  document.body.appendChild(ring);
+  setTimeout(function() { ring.remove(); }, 1300);
+
+  // Gargamel hurt
+  var gargamel = document.getElementById('gargamel');
+  gargamel.classList.add('hurt');
+  setTimeout(function() { gargamel.classList.remove('hurt'); }, 400);
+
+  document.getElementById('spell-status').textContent = '🎵 金色声波震撼了整个城堡！格格巫抱头惨叫！';
+  playClickSound();
+
+  // Backpack becomes available
+  setTimeout(function() {
+    backpackReady = true;
+    document.getElementById('btn-backpack-finish').style.display = 'inline-block';
+    document.getElementById('spell-status').textContent = '🤖 机械背包充能完毕——快点击机械手臂夺走魔杖！';
+  }, 1200);
+
+  // Trumpet cooldown
+  setTimeout(function() {
+    trumpetReady = true;
+    if (bossPhase === 'fighting') {
+      document.getElementById('btn-trumpet').style.display = 'inline-block';
+    }
+  }, 30000);
+}
+
+function useBackpackFinish() {
+  if (!backpackReady || bossPhase !== 'fighting') return;
+  backpackReady = false;
+  bossPhase = 'victory';
+  if (spellLoop) clearInterval(spellLoop);
+  if (darkTimer) clearTimeout(darkTimer);
+
+  // Clean up
+  var overlay = document.getElementById('spell-overlay');
+  if (overlay) overlay.remove();
+  document.getElementById('btn-trumpet').style.display = 'none';
+  document.getElementById('btn-backpack-finish').style.display = 'none';
+  document.getElementById('spell-warning').textContent = '';
+  document.getElementById('spell-response-area').innerHTML = '';
+  document.getElementById('spell-status').textContent = '🤖 机械手臂出击！！！';
+
+  playHitSound();
+  showArmAnimation();
+}
+
+function showArmAnimation() {
+  var scene = document.createElement('div');
+  scene.className = 'arm-scene';
+  scene.id = 'arm-scene';
+  scene.innerHTML = '<div class="arm-segment arm-upper"></div><div class="arm-segment arm-lower"></div><div class="arm-hand"></div>';
+  document.body.appendChild(scene);
+
+  // Wand being snatched
+  var wand = document.createElement('div');
+  wand.style.cssText = 'position:fixed;top:42%;left:54%;font-size:40px;z-index:310;pointer-events:none;transition:all 1s ease-in;';
+  wand.textContent = '🪄';
+  document.body.appendChild(wand);
+
+  setTimeout(function() {
+    wand.style.transform = 'translate(-220px, 120px) rotate(-50deg) scale(.4)';
+    wand.style.opacity = '.3';
+  }, 700);
+
+  setTimeout(function() {
+    wand.remove();
+    document.getElementById('arm-scene').remove();
+    document.getElementById('gargamel').classList.add('shrinking');
+    document.getElementById('spell-status').textContent = '魔杖被夺走了！！！格格巫在消失……';
+  }, 1800);
+
+  setTimeout(function() {
+    startVictorySequence();
+  }, 3200);
 }
 
 // ===== INIT =====
