@@ -1323,6 +1323,7 @@ function showBackpackReward() {
 function closeRewardPopup() {
   const overlay = document.getElementById('reward-popup-overlay');
   if (overlay) overlay.remove();
+  finishBackpackReveal();
 }
 
 function finishScanPhase() {
@@ -1330,7 +1331,6 @@ function finishScanPhase() {
   document.getElementById('scanning-area').style.display = 'none';
   document.getElementById('tool-status-area').style.display = 'block';
   document.getElementById('tool-status-area').scrollIntoView({ behavior: 'smooth' });
-  showBackpackReward();
 }
 
 function collectTool(idx) {
@@ -1905,13 +1905,17 @@ function openChest() {
   setTimeout(() => {
     document.getElementById('chest-area').style.display = 'none';
     document.getElementById('chest-area').classList.remove('show');
-    const card = document.getElementById('reward-card');
-    card.style.display = 'block';
-    card.classList.add('show');
-    card.scrollIntoView({ behavior: 'smooth' });
-    addItem('机械巨兽', '🤖');
-    document.getElementById('btn-replay').style.display = 'inline-block';
-  }, 2000);
+    showBackpackReward();
+  }, 1800);
+}
+
+function finishBackpackReveal() {
+  const card = document.getElementById('reward-card');
+  card.style.display = 'block';
+  card.classList.add('show');
+  card.scrollIntoView({ behavior: 'smooth' });
+  addItem('机械巨兽', '🤖');
+  document.getElementById('btn-replay').style.display = 'inline-block';
 }
 
 function resetBoss() {
