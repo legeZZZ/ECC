@@ -590,7 +590,46 @@ body {
     </div>
   </div>
 </div>
-  <div class="gate-content" id="gate-wisdom"></div>
+  <div class="gate-content" id="gate-wisdom">
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <button class="btn btn-sm" onclick="backToGateSelect()" style="background:#3a3a6a;color:#ccc;padding:6px 12px;">← 返回</button>
+      <h2 style="margin:0;">🧠 智慧之门 · 书海寻书</h2>
+    </div>
+    <p style="color:#aaa;font-size:13px;margin-bottom:4px;">聪聪在书架前翻书。家长根据家中书籍自由描述线索，孩子找到对应的书！</p>
+    <p style="color:#f59e0b;font-size:12px;margin-bottom:12px;" id="wisdom-hint"></p>
+
+    <div class="book-slots" id="book-slots">
+      <div class="book-slot" id="book-0" onclick="lightBook(0)">
+        <span class="book-icon">📕</span>
+        <span class="book-label">红色智慧书</span>
+      </div>
+      <div class="book-slot" id="book-1" onclick="lightBook(1)">
+        <span class="book-icon">📗</span>
+        <span class="book-label">绿色智慧书</span>
+      </div>
+      <div class="book-slot" id="book-2" onclick="lightBook(2)">
+        <span class="book-icon">📘</span>
+        <span class="book-label">蓝色智慧书</span>
+      </div>
+      <div class="book-slot" id="book-3" onclick="lightBook(3)">
+        <span class="book-icon">📙</span>
+        <span class="book-label">金色智慧书</span>
+      </div>
+    </div>
+
+    <p style="text-align:center;margin-top:8px;display:none;" id="mirror-hint">
+      <button class="btn btn-sm" id="btn-mirror" onclick="useMirrorHint()" style="background:#8b5cf6;color:#fff;padding:6px 12px;font-size:12px;">🪞 魔法手镜：照出线索</button>
+    </p>
+
+    <p style="text-align:center;color:#f59e0b;font-weight:700;margin-top:8px;" id="wisdom-status">
+      📚 已点亮 <span id="wisdom-lit-count">0</span> / <span id="wisdom-needed-text">4</span>
+    </p>
+    <div style="text-align:center;">
+      <button class="btn btn-primary" id="btn-wisdom-done" onclick="finishWisdomGate()" style="display:none;">✅ 智慧之门通过！</button>
+    </div>
+  </div>
+</div>
   <div class="gate-content" id="gate-kindness"></div>
 
   <!-- Door Break Scene (later) -->
@@ -772,6 +811,49 @@ function backToGateSelect() {
   document.querySelectorAll('.gate-content').forEach(g => g.classList.remove('active'));
   document.getElementById('gate-select').style.display = 'block';
   gatePhase = 'select';
+}
+
+function lightBook(idx) {
+  if (gatePhase !== 'wisdom') return;
+  const slot = document.getElementById('book-' + idx);
+  if (!slot || slot.classList.contains('lit')) return;
+  slot.classList.add('lit');
+  wisdomLit++;
+  playClickSound();
+  updateWisdomStatus();
+  if (wisdomLit >= wisdomNeeded) {
+    document.getElementById('btn-wisdom-done').style.display = 'inline-block';
+  }
+}
+
+function updateWisdomStatus() {
+  document.getElementById('wisdom-lit-count').textContent = wisdomLit;
+  document.getElementById('wisdom-needed-text').textContent = wisdomNeeded;
+  if (hasItem('智慧宝石')) {
+    document.getElementById('wisdom-hint').textContent = '🧠 智慧宝石：聪聪已经帮你破解了2本书！';
+  }
+}
+
+function useMirrorHint() {
+  if (!hasItem('魔法手镜')) return;
+  const slots = document.querySelectorAll('#gate-wisdom .book-slot');
+  const unlit = [];
+  slots.forEach((s, i) => { if (!s.classList.contains('lit')) unlit.push(i); });
+  if (unlit.length > 0) {
+    const target = unlit[Math.floor(Math.random() * unlit.length)];
+    const labels = ['红色', '绿色', '蓝色', '金色'];
+    alert('🪞 魔法手镜照出了线索！\n\n"' + labels[target] + '智慧书"藏在哪里……\n请家长给孩子一个额外的提示！');
+  }
+  document.getElementById('btn-mirror').style.display = 'none';
+}
+
+function finishWisdomGate() {
+  document.getElementById('gate-wisdom').classList.remove('active');
+  document.getElementById('gate-select').style.display = 'block';
+  document.getElementById('gate-btn-wisdom').classList.add('completed');
+  document.getElementById('gate-btn-wisdom').disabled = true;
+  document.getElementById('gate-btn-kindness').disabled = false;
+  checkAllGatesDone();
 }
 
 function enterGate(type) {
