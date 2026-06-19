@@ -197,6 +197,11 @@ body {
   color: #1a1a2e;
   box-shadow: 0 6px 20px rgba(245,158,11,.3);
 }
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(239,68,68,.4);
+}
 .btn-sm {
   padding: 10px 24px;
   font-size: 14px;
@@ -262,6 +267,53 @@ body {
   padding: 20px;
   position: relative;
 }
+
+/* ===== CASTLE SCENE ===== */
+.castle-scene { position: relative; height: 200px; background: linear-gradient(#0f0c29 0%, #1a1040 40%, #302b63 100%); border-radius: 16px; overflow: hidden; margin-bottom: 16px; }
+.castle-scene .moon { position: absolute; top: 20px; right: 40px; width: 60px; height: 60px; background: radial-gradient(circle, #fef3c7, #f59e0b); border-radius: 50%; box-shadow: 0 0 40px rgba(245,158,11,.3); }
+.castle-scene .castle-body { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 260px; height: 140px; background: #2d2d4a; border-radius: 8px 8px 0 0; }
+.castle-scene .castle-body::before { content: ''; position: absolute; top: -60px; left: 30px; width: 60px; height: 80px; background: #3d3d5c; border-radius: 4px 4px 0 0; }
+.castle-scene .castle-body::after { content: ''; position: absolute; top: -80px; right: 40px; width: 50px; height: 100px; background: #3d3d5c; border-radius: 4px 4px 0 0; }
+.castle-scene .gate { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 120px; background: #1a1030; border-radius: 40px 40px 0 0; border: 3px solid #4a3a6a; }
+.castle-scene .gate-lock { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 28px; }
+.castle-scene .giants { position: absolute; bottom: 5px; left: 15px; display: flex; gap: 20px; }
+.castle-scene .giant { font-size: 36px; animation: giantBreath 2s ease-in-out infinite; }
+.castle-scene .giant:nth-child(2) { animation-delay: 0.6s; }
+.castle-scene .giant:nth-child(3) { animation-delay: 1.2s; }
+@keyframes giantBreath { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-4px) scale(1.03); } }
+
+/* ===== GATE SELECTION ===== */
+.gate-select { text-align: center; }
+.gate-btns { display: flex; gap: 12px; justify-content: center; margin: 16px 0; flex-wrap: wrap; }
+.gate-btn { width: 90px; padding: 16px 8px; border-radius: 16px; border: 2px solid #3a3a6a; background: #1e1e3a; color: #ccc; cursor: pointer; text-align: center; transition: all .2s; font-size: 14px; }
+.gate-btn:hover { border-color: #6d28d9; background: #2a1a4a; }
+.gate-btn:disabled { opacity: .4; cursor: not-allowed; }
+.gate-btn:disabled:hover { border-color: #3a3a6a; background: #1e1e3a; }
+.gate-btn .gate-icon { font-size: 36px; display: block; margin-bottom: 4px; }
+.gate-btn.completed { border-color: #22c55e !important; background: #052e16 !important; opacity: .8 !important; cursor: default !important; }
+.gate-btn.completed::after { content: ' ✅'; display: block; font-size: 12px; }
+
+/* ===== GATE CONTENT ===== */
+.gate-content { display: none; }
+.gate-content.active { display: block; }
+
+/* ===== CHALLENGE CARDS (courage gate) ===== */
+.challenge-card { background: #1e1e3a; border-radius: 12px; padding: 16px; margin-bottom: 12px; border-left: 4px solid #ef4444; cursor: pointer; transition: all .2s; }
+.challenge-card:hover { background: #2a1a3a; }
+.challenge-card.done { border-left-color: #22c55e !important; opacity: .7; }
+.challenge-card.done::after { content: ' ✅'; color: #22c55e; }
+
+/* ===== BOOK SLOTS (wisdom gate) ===== */
+.book-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+.book-slot { background: #1e1e3a; border-radius: 12px; padding: 20px; text-align: center; border: 2px dashed #3a3a6a; cursor: pointer; transition: all .4s; }
+.book-slot:hover { border-color: #6d28d9; }
+.book-slot.lit { border-style: solid; cursor: default; }
+.book-slot:nth-child(1).lit { border-color: #ef4444; background: #1a0a0a; box-shadow: 0 0 20px rgba(239,68,68,.3); }
+.book-slot:nth-child(2).lit { border-color: #22c55e; background: #0a1a0a; box-shadow: 0 0 20px rgba(34,197,94,.3); }
+.book-slot:nth-child(3).lit { border-color: #3b82f6; background: #0a0a1a; box-shadow: 0 0 20px rgba(59,130,246,.3); }
+.book-slot:nth-child(4).lit { border-color: #f59e0b; background: #1a1000; box-shadow: 0 0 20px rgba(245,158,11,.3); }
+.book-slot .book-icon { font-size: 40px; display: block; }
+.book-slot .book-label { font-size: 12px; color: #888; margin-top: 4px; }
 
 /* ========== VICTORY ========== */
 .victory { display: none; text-align: center; padding: 30px 20px; animation: popIn .5s ease-out; }
@@ -478,8 +530,48 @@ body {
     <span class="empty" id="inv-empty">空空如也，打败 Boss 获得道具！</span>
   </div>
 
-  <div class="boss-stage" id="boss-stage">
+  <!-- Castle Scene -->
+  <div class="castle-scene">
+    <div class="moon"></div>
+    <div class="castle-body"></div>
+    <div class="gate"><span class="gate-lock">🔒</span></div>
+    <div class="giants">
+      <span class="giant">😴</span><span class="giant">😴</span><span class="giant">😴</span>
+    </div>
   </div>
+
+  <!-- Gate Selection -->
+  <div class="card gate-select" id="gate-select">
+    <h2>🏰 噩梦城堡</h2>
+    <p style="color:#aaa;font-size:13px;margin-bottom:12px;">按顺序挑战三扇大门：勇气 → 智慧 → 善良</p>
+    <div class="gate-btns">
+      <button class="gate-btn" id="gate-btn-courage" onclick="enterGate('courage')">
+        <span class="gate-icon">🏅</span>勇气之门
+      </button>
+      <button class="gate-btn" id="gate-btn-wisdom" onclick="enterGate('wisdom')" disabled>
+        <span class="gate-icon">🧠</span>智慧之门
+      </button>
+      <button class="gate-btn" id="gate-btn-kindness" onclick="enterGate('kindness')" disabled>
+        <span class="gate-icon">💛</span>善良之门
+      </button>
+    </div>
+    <div id="gate-status" style="font-size:13px;color:#888;margin:12px 0;"></div>
+    <button class="btn btn-danger" id="btn-start-boss" onclick="startBossFight()" style="display:none;font-size:16px;padding:12px 28px;">⚡ 进入黑暗城堡！</button>
+  </div>
+
+  <!-- Gate Contents (filled by later tasks) -->
+  <div class="gate-content" id="gate-courage"></div>
+  <div class="gate-content" id="gate-wisdom"></div>
+  <div class="gate-content" id="gate-kindness"></div>
+
+  <!-- Door Break Scene (later) -->
+  <div class="card" id="door-break" style="display:none;"></div>
+
+  <!-- Boss Fight (later) -->
+  <div class="card" id="boss-fight" style="display:none;"></div>
+
+  <!-- Victory Area (later) -->
+  <div id="victory-area" style="display:none;"></div>
 
 </div>
 
@@ -558,10 +650,91 @@ function showPage(name) {
   if (name === 'boss') { renderInventory(); initBoss(); }
 }
 
-// ===== BOSS INIT (skeleton) =====
+// ===== GAME STATE =====
+let gatePhase = 'select';
+let courageDone = 0;
+let courageNeeded = 3;
+let wisdomLit = 0;
+let wisdomNeeded = 4;
+let kindnessDone = 0;
+let kindnessCurrent = 0;
+
 function initBoss() {
-  // Reset game state — will be filled in later tasks
-  // Placeholder: clear any active timers, reset UI elements, etc.
+  gatePhase = 'select';
+  courageDone = 0;
+  wisdomLit = 0;
+  kindnessDone = 0;
+  kindnessCurrent = 0;
+  courageNeeded = hasItem('勇气勋章') ? 1 : 3;
+  wisdomNeeded = hasItem('智慧宝石') ? 2 : 4;
+
+  // Show gate select
+  document.getElementById('gate-select').style.display = 'block';
+  document.querySelectorAll('.gate-content').forEach(function(g) { g.classList.remove('active'); });
+  document.getElementById('door-break').style.display = 'none';
+  document.getElementById('boss-fight').style.display = 'none';
+  document.getElementById('victory-area').style.display = 'none';
+  document.getElementById('btn-start-boss').style.display = 'none';
+  document.getElementById('gate-status').textContent = '';
+
+  // Reset gate buttons
+  ['courage','wisdom','kindness'].forEach(function(g) {
+    var btn = document.getElementById('gate-btn-' + g);
+    if (btn) { btn.classList.remove('completed'); btn.disabled = true; }
+  });
+  var courageBtn = document.getElementById('gate-btn-courage');
+  if (courageBtn) courageBtn.disabled = false;
+
+  // Reset challenge cards
+  document.querySelectorAll('.challenge-card').forEach(function(c) { c.classList.remove('done'); });
+
+  // Reset book slots
+  document.querySelectorAll('.book-slot').forEach(function(s) { s.classList.remove('lit'); });
+}
+
+function enterGate(type) {
+  document.getElementById('gate-select').style.display = 'none';
+  document.querySelectorAll('.gate-content').forEach(function(g) { g.classList.remove('active'); });
+  document.getElementById('gate-' + type).classList.add('active');
+  gatePhase = type;
+
+  if (type === 'courage') {
+    courageDone = 0;
+    document.getElementById('btn-courage-done').style.display = 'none';
+    document.querySelectorAll('#gate-courage .challenge-card').forEach(function(c) { c.classList.remove('done'); });
+    updateCourageStatus();
+  }
+  if (type === 'wisdom') {
+    wisdomLit = 0;
+    wisdomNeeded = hasItem('智慧宝石') ? 2 : 4;
+    document.getElementById('wisdom-needed-text').textContent = wisdomNeeded;
+    document.getElementById('btn-wisdom-done').style.display = 'none';
+    document.querySelectorAll('#gate-wisdom .book-slot').forEach(function(s, i) {
+      s.classList.remove('lit');
+      if (hasItem('智慧宝石') && i < 2) { s.classList.add('lit'); wisdomLit++; }
+    });
+    updateWisdomStatus();
+    // Mirror hint button
+    var mirrorHint = document.getElementById('mirror-hint');
+    if (mirrorHint) mirrorHint.style.display = hasItem('魔法手镜') ? 'block' : 'none';
+  }
+  if (type === 'kindness') {
+    kindnessDone = 0;
+    kindnessCurrent = 0;
+    document.getElementById('kindness-done-count').textContent = '0';
+    document.getElementById('btn-kindness-done').style.display = 'none';
+    showKindnessCard(0);
+  }
+}
+
+function checkAllGatesDone() {
+  var allDone = document.getElementById('gate-btn-courage').classList.contains('completed')
+    && document.getElementById('gate-btn-wisdom').classList.contains('completed')
+    && document.getElementById('gate-btn-kindness').classList.contains('completed');
+  if (allDone) {
+    document.getElementById('gate-status').textContent = '✅ 三扇大门全部打开！黑暗城堡入口显现……';
+    document.getElementById('btn-start-boss').style.display = 'inline-block';
+  }
 }
 
 // ===== INIT =====
