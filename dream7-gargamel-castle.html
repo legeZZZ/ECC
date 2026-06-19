@@ -465,6 +465,12 @@ body {
   90% { transform: translate(-4px,2px); }
 }
 body.shaking { animation: screenShake .5s ease-out; }
+
+/* ===== COOKING ===== */
+.dice-btn { width: 64px; height: 64px; background: linear-gradient(135deg,#f59e0b,#d97706); border-radius: 16px; margin: 8px auto; line-height: 64px; font-size: 32px; cursor: pointer; transition: all .2s; user-select: none; }
+.dice-btn:hover { transform: scale(1.08); }
+.dice-btn:active { transform: scale(.95); }
+.dish-result { font-size: 18px; font-weight: 700; margin: 8px 0; min-height: 28px; color: #f59e0b; }
 </style>
 </head>
 <body>
@@ -651,6 +657,15 @@ body.shaking { animation: screenShake .5s ease-out; }
     <div class="giants">
       <span class="giant">😴</span><span class="giant">😴</span><span class="giant">😴</span>
     </div>
+  </div>
+
+  <!-- Cooking Area -->
+  <div class="card" id="cooking-area" style="display:none;text-align:center;">
+    <h3 style="margin-bottom:8px;">🍳 战前料理</h3>
+    <p style="font-size:12px;color:#aaa;margin-bottom:4px;">掷骰子做一道料理，获得战斗增益！</p>
+    <div class="dice-btn" id="dice-btn" onclick="rollDice()">🎲</div>
+    <div class="dish-result" id="dish-result"></div>
+    <p style="font-size:12px;color:#aaa;" id="dish-effect"></p>
   </div>
 
   <!-- Gate Selection -->
@@ -931,6 +946,15 @@ let wisdomLit = 0;
 let wisdomNeeded = 4;
 let kindnessDone = 0;
 let kindnessCurrent = 0;
+let cookingBuff = null;
+const cookingDishes = [
+  { name: '勇气汤', emoji: '🍲', effect: '恐惧咒持续时间减半' },
+  { name: '清醒茶', emoji: '🍵', effect: '遗忘咒不会触发' },
+  { name: '星光饼干', emoji: '🍪', effect: '黑暗咒亮度保持可见' },
+  { name: '护盾果汁', emoji: '🥤', effect: '自动抵挡一次咒语' },
+  { name: '魔法糖果', emoji: '🍭', effect: '小号冷却减为15秒' },
+  { name: '希望松饼', emoji: '🥞', effect: '所有咒语效果减弱' },
+];
 
 function initBoss() {
   if (spellLoop) clearInterval(spellLoop);
@@ -965,6 +989,14 @@ function initBoss() {
 
   // Reset book slots
   document.querySelectorAll('.book-slot').forEach(function(s) { s.classList.remove('lit'); });
+
+  // Cooking area
+  var cookingArea = document.getElementById('cooking-area');
+  if (cookingArea) cookingArea.style.display = hasItem('儿童魔法厨具') ? 'block' : 'none';
+  document.getElementById('dice-btn').textContent = '🎲';
+  document.getElementById('dish-result').textContent = '';
+  document.getElementById('dish-effect').textContent = '';
+  cookingBuff = null;
 }
 
 // ===== AUDIO HELPERS =====
@@ -980,6 +1012,19 @@ function playClickSound() {
     gain.gain.exponentialRampToValueAtTime(.01, ctx.currentTime + .1);
     osc.start(ctx.currentTime); osc.stop(ctx.currentTime + .1);
   } catch(e) {}
+}
+
+// ===== COOKING DICE =====
+function rollDice() {
+  const btn = document.getElementById('dice-btn');
+  btn.style.animation = 'shake .3s ease';
+  setTimeout(function() { btn.style.animation = ''; }, 300);
+  const result = Math.floor(Math.random() * 6);
+  const dish = cookingDishes[result];
+  document.getElementById('dish-result').textContent = dish.emoji + ' 掷出：' + dish.name;
+  document.getElementById('dish-effect').textContent = '效果：' + dish.effect;
+  cookingBuff = dish;
+  playClickSound();
 }
 
 // ===== COURAGE GATE HELPERS =====
@@ -1221,6 +1266,21 @@ function enterBossFight() {
   spellBlocked = false;
   if (spellLoop) clearInterval(spellLoop);
 
+  // Apply cooking buff
+  if (cookingBuff) {
+    var idx = cookingDishes.indexOf(cookingBuff);
+    if (idx === 1) { // 清醒茶: no forget spells
+      document.getElementById('spell-status').textContent = '🍵 清醒茶保护：遗忘咒无效！';
+    }
+    if (idx === 3) { // 护盾果汁: auto-block first spell
+      spellBlocked = true;
+      document.getElementById('spell-status').textContent = '🥤 护盾果汁：第一次咒语自动抵挡！';
+    }
+    if (idx === 4) { // 魔法糖果: trumpet cooldown 15s
+      document.getElementById('spell-status').textContent = '🍭 魔法糖果：小号冷却缩短！';
+    }
+  }
+
   document.getElementById('btn-trumpet').style.display = hasItem('金色小号') ? 'inline-block' : 'none';
   document.getElementById('btn-backpack-finish').style.display = 'none';
   document.getElementById('spell-warning').textContent = '';
@@ -1246,6 +1306,12 @@ function startSpellLoop() {
 function castRandomSpell() {
   var spells = ['fear', 'forget', 'darkness'];
   spellType = spells[Math.floor(Math.random() * spells.length)];
+
+  // Cooking buff: 清醒茶 blocks forget spells
+  if (cookingBuff && cookingDishes.indexOf(cookingBuff) === 1 && spellType === 'forget') {
+    document.getElementById('spell-warning').textContent = '🍵 清醒茶保护：遗忘咒被抵消了！';
+    return;
+  }
 
   var gargamel = document.getElementById('gargamel');
   gargamel.classList.add('casting');
@@ -1279,10 +1345,16 @@ function castRandomSpell() {
     case 'darkness':
       document.getElementById('spell-warning').textContent = '🌑 黑暗咒！页面渐渐变黑——在黑透前点击金色小号！';
       overlay.classList.add('darkness');
-      // Gradual darken
-      requestAnimationFrame(function() {
-        requestAnimationFrame(function() { overlay.classList.add('active'); });
-      });
+      // If has 星光饼干, darkness only goes to 50%
+      if (cookingBuff && cookingDishes.indexOf(cookingBuff) === 2) {
+        overlay.style.background = 'rgba(0,0,0,.5)';
+        overlay.classList.add('active');
+        document.getElementById('spell-warning').textContent = '🌑 黑暗咒！（🍪 星光饼干：仍能看见）';
+      } else {
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() { overlay.classList.add('active'); });
+        });
+      }
       darkTimer = setTimeout(function() {
         document.getElementById('spell-warning').textContent = '太黑了！格格巫得意地大笑："哈哈哈，谁都别想打败我！"';
         if (overlay.parentNode) overlay.remove();
@@ -1349,12 +1421,13 @@ function useTrumpet() {
   }, 1200);
 
   // Trumpet cooldown
+  var cooldown = (cookingBuff && cookingDishes.indexOf(cookingBuff) === 4) ? 15000 : 30000;
   setTimeout(function() {
     trumpetReady = true;
     if (bossPhase === 'fighting') {
       document.getElementById('btn-trumpet').style.display = 'inline-block';
     }
-  }, 30000);
+  }, cooldown);
 }
 
 function useBackpackFinish() {
