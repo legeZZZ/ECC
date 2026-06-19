@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>第六梦：灵灵的机械工坊 - 蓝精灵梦境大冒险</title>
+<title>🔧 v2 第六梦：灵灵的机械工坊 - 蓝精灵梦境大冒险</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1302,19 +1302,11 @@ function scanDevice(idx) {
   if (devicesFound >= needed) {
     document.getElementById('scan-progress').textContent = '✅ 全部找到！工具名单完整揭示！🤖 机械背包获得！';
     document.getElementById('btn-phase-done').style.display = 'inline-block';
-    // Show backpack reward popup
-    setTimeout(() => showBackpackReward(), 500);
   }
 }
 
 
 function showBackpackReward() {
-  const hasCourage = hasItem('勇气勋章');
-  const needed = hasCourage ? 3 : 5;
-  if (devicesFound < needed) {
-    alert('DEBUG: devicesFound=' + devicesFound + ' needed=' + needed + ' — 不该弹出！请截图发给我。');
-    return;
-  }
   const overlay = document.createElement('div');
   overlay.className = 'reward-popup-overlay';
   overlay.id = 'reward-popup-overlay';
@@ -1338,6 +1330,7 @@ function finishScanPhase() {
   document.getElementById('scanning-area').style.display = 'none';
   document.getElementById('tool-status-area').style.display = 'block';
   document.getElementById('tool-status-area').scrollIntoView({ behavior: 'smooth' });
+  showBackpackReward();
 }
 
 function collectTool(idx) {
