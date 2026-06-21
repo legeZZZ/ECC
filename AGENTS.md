@@ -1,6 +1,6 @@
 # Everything Claude Code (ECC) — Agent Instructions
 
-This is a **production-ready AI coding plugin** providing 65 specialized agents, 262 skills, 84 commands, and automated hook workflows for software development.
+This is a **production-ready AI coding plugin** providing 70 specialized agents, 264 skills, 84 commands, and automated hook workflows for software development.
 
 **Version:** 2.0.0
 
@@ -22,6 +22,11 @@ This is a **production-ready AI coding plugin** providing 65 specialized agents,
 | code-reviewer | Code quality and maintainability | After writing/modifying code |
 | security-reviewer | Vulnerability detection | Before commits, sensitive code |
 | spec-miner | Brownfield spec extraction | Onboarding brownfield projects to spec-driven development |
+| spec-fuzzer | Adversarial spec test generation | After spec-miner produces baseline specs |
+| spec-delta-writer | Delta spec generation from git diffs | After code changes that affect spec'd behavior |
+| spec-to-test | Test skeleton generation from specs | After spec-miner or spec-delta-writer produces specs |
+| spec-freshness-checker | Spec staleness detection | CI gate or before trusting specs for planning |
+| spec-guardian | Continuous spec health monitoring | Weekly cron or on-demand spec health audit |
 | build-error-resolver | Fix build/type errors | When build fails |
 | e2e-runner | End-to-end Playwright testing | Critical user flows |
 | refactor-cleaner | Dead code cleanup | Code maintenance |
@@ -57,6 +62,8 @@ Use agents proactively without user prompt:
 - Architectural decision → **architect**
 - Security-sensitive code → **security-reviewer**
 - Brownfield project onboarding → **spec-miner**
+- Spec-driven development lifecycle → **orch-spec-lifecycle** (skill) or chain: spec-miner → spec-fuzzer → spec-to-test → tdd-guide → code-reviewer
+- Per-PR spec updates → **orch-spec-delta** (skill) or chain: spec-delta-writer → planner → tdd-guide → code-reviewer
 - Autonomous loops / loop monitoring → **loop-operator**
 - Harness config reliability and cost → **harness-optimizer**
 
@@ -151,8 +158,8 @@ Troubleshoot failures: check test isolation → verify mocks → fix implementat
 ## Project Structure
 
 ```
-agents/          — 65 specialized subagents
-skills/          — 262 workflow skills and domain knowledge
+agents/          — 70 specialized subagents
+skills/          — 264 workflow skills and domain knowledge
 commands/        — 84 slash commands
 hooks/           — Trigger-based automations
 rules/           — Always-follow guidelines (common + per-language)
